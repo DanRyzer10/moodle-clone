@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { LoginScreen } from './src/screens/auth/LoginScreen';
+import './global.css';
+import { LoginScreen } from './src/screens/auth/login-screen';
 
 export default function App() {
   return (
     <>
       <LoginScreen />
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
     </>
   );
 }

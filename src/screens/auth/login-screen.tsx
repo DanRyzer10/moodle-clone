@@ -1,64 +1,129 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  Image, 
-  StatusBar,
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
   KeyboardAvoidingView,
-  Platform 
+  Platform,
+  StatusBar,
+  Image,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GoogleButton } from '../../components/common/GoogleButton';
+import { LinearGradient } from 'expo-linear-gradient';
+import { CustomInput } from '../../components/common/input';
+import { GoogleButton } from '../../components/common/google-button';
+import { IMAGE_URL } from '../../core/constants';
 
 export const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleGoogleSignIn = async () => {
+  const handleLogin = async () => {
     try {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      console.log('Login with:', { email, password });
     } catch (error) {
+      console.error('Login error:', error);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      console.log('Google Sign In');
+    } catch (error) {
+      console.error('Google Sign In error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = () => {
+    console.log('Forgot password');
+  };
+
+  const handleSignUp = () => {
+    console.log('Navigate to sign up');
+  };
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white dark:bg-background-dark">
       <StatusBar barStyle="dark-content" />
       
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
       >
-        <View className="flex-1 justify-center items-center px-6">
-          
-          <View className="items-center mb-12">
-            <View className="w-32 h-32 bg-primary rounded-3xl items-center justify-center mb-4 shadow-lg">
-              <Text className="text-white text-5xl font-bold">M</Text>
-            </View>
-            
-            <Text className="text-3xl font-bold text-gray-800 mb-2">
-              Moodle Clone
-            </Text>
-            <Text className="text-gray-500 text-center">
-            </Text>
-          </View>
-
-          <View className="w-full max-w-sm">
-            <GoogleButton 
-              onPress={handleGoogleSignIn}
-              loading={loading}
+        <ScrollView
+          className="flex-1"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+         
+          <View className="relative w-full h-56 bg-primary/5 dark:bg-primary/10 rounded-b-[40px] overflow-hidden">
+            <LinearGradient
+              colors={['rgba(19, 91, 236, 0.1)', 'transparent']}
+              className="absolute inset-0"
             />
-          </View>
-          <View className="absolute bottom-8">
-            <Text className="text-gray-400 text-sm">
-              Versión 1.0.0
-            </Text>
+            
+         
+            <View className="absolute -right-10 -top-10 w-40 h-40 bg-primary/20 rounded-full" 
+                  style={{ opacity: 0.3 }} />
+            <View className="absolute -left-10 top-10 w-32 h-32 bg-purple-500/10 rounded-full" 
+                  style={{ opacity: 0.3 }} />
+            
+         
+            <View className="relative h-full flex-col items-center justify-end pb-6 px-6">
+              <Image
+                source={{ uri: IMAGE_URL }}
+                className="w-full h-40"
+                resizeMode="contain"
+              />
+            </View>
           </View>
 
-        </View>
+         
+          <View className="px-6 pt-6 pb-8">
+            <View className="text-center mb-8">
+              <Text className="text-slate-900 dark:text-white text-3xl font-bold text-center mb-2">
+                Bienvenido de nuevo
+              </Text>
+              <Text className="text-slate-500 dark:text-slate-400 text-base text-center">
+                Inicia Sesion para continuar
+              </Text>
+            </View>
+            <View className="relative my-8">
+              <View className="absolute inset-0 flex items-center">
+                <View className="w-full border-t border-slate-200 dark:border-slate-700" />
+              </View>
+              <View className="relative flex justify-center">
+                <Text className="px-4 bg-white dark:bg-background-dark text-slate-500 dark:text-slate-400 text-sm text-center">
+                  Continua con
+                </Text>
+              </View>
+            </View>
+
+            <GoogleButton onPress={handleGoogleSignIn} loading={loading} />
+            <View className="mt-8">
+              <Text className="text-sm text-slate-600 dark:text-slate-400 text-center">
+                New here?{' '}
+                <Text
+                  onPress={handleSignUp}
+                  className="font-semibold text-primary"
+                >
+                  Create an Account
+                </Text>
+              </Text>
+            </View>
+
+            <View className="h-8" />
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
