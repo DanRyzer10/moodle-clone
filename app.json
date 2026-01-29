@@ -2,6 +2,7 @@
   "expo": {
     "name": "moodle-clone-app",
     "slug": "moodle-clone-app",
+    "scheme":"moodlecloneapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,13 +19,21 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "package": "com.azambrar.moodlecloneapp"
       },
+
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.moodlecloneapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ad7f1185-289c-4bd9-b690-b4247f14d358"
+      }
     }
   }
 }

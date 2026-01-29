@@ -12,30 +12,28 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CustomInput } from '../../components/common/input';
+import * as Google from 'expo-auth-session/providers/google';
 import { GoogleButton } from '../../components/common/google-button';
 import { IMAGE_URL } from '../../core/constants';
+import { AppContext } from '../../core/app-context';
 
 export const LoginScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const authService = AppContext.authService;
+  const [request, , promptAsync] = Google.useAuthRequest(
+    authService.getGoogleAuthRequestConfig()
+  );
 
-  const handleLogin = async () => {
-    try {
-      setLoading(true);
-      console.log('Login with:', { email, password });
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      console.log('Google Sign In');
+      if (!request) {
+        throw new Error('Google sign-in is not ready yet.');
+      }
+
+      const idToken = await authService.signInWithGoogle(promptAsync);
+      console.log('Google Sign-In successful, token:', idToken);
     } catch (error) {
       console.error('Google Sign In error:', error);
     } finally {
@@ -108,7 +106,11 @@ export const LoginScreen = () => {
               </View>
             </View>
 
-            <GoogleButton onPress={handleGoogleSignIn} loading={loading} />
+            <GoogleButton
+              onPress={handleGoogleSignIn}
+              loading={loading}
+              disabled={!request}
+            />
             <View className="mt-8">
               <Text className="text-sm text-slate-600 dark:text-slate-400 text-center">
                 New here?{' '}

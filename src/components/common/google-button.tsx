@@ -5,6 +5,7 @@ import Svg, { Path } from 'react-native-svg';
 interface GoogleButtonProps {
   onPress: () => void;
   loading?: boolean;
+  disabled?: boolean;
 }
 
 const GoogleIcon = () => (
@@ -28,14 +29,15 @@ const GoogleIcon = () => (
   </Svg>
 );
 
-export const GoogleButton: React.FC<GoogleButtonProps> = ({ 
-  onPress, 
-  loading = false 
+export const GoogleButton: React.FC<GoogleButtonProps> = ({
+  onPress,
+  loading = false,
+  disabled = false,
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      disabled={loading}
+      disabled={loading || disabled}
       activeOpacity={0.8}
       className="w-full flex-row justify-center items-center py-3.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 active:scale-[0.98]"
     >
