@@ -2,7 +2,7 @@
   "expo": {
     "name": "moodle-clone-app",
     "slug": "moodle-clone-app",
-    "scheme":"moodlecloneapp",
+    "scheme": "moodlecloneapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.azambrar.moodlecloneapp",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["moodlecloneapp"]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,10 +30,23 @@
         "backgroundColor": "#ffffff",
         "package": "com.azambrar.moodlecloneapp"
       },
-
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.moodlecloneapp"
+      "package": "com.anonymous.moodlecloneapp",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "moodlecloneapp",
+              "host": "auth",
+              "pathPrefix": "/callback"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +55,9 @@
       "eas": {
         "projectId": "ad7f1185-289c-4bd9-b690-b4247f14d358"
       }
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

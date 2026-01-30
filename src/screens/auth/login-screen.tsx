@@ -20,20 +20,12 @@ import { AppContext } from '../../core/app-context';
 export const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const authService = AppContext.authService;
-  const [request, , promptAsync] = Google.useAuthRequest(
-    authService.getGoogleAuthRequestConfig()
-  );
 
-  
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      if (!request) {
-        throw new Error('Google sign-in is not ready yet.');
-      }
-
-      const idToken = await authService.signInWithGoogle(promptAsync);
-      console.log('Google Sign-In successful, token:', idToken);
+      const response =await authService.handleGoogleLogin();
+      console.log('Auth Response:', response);
     } catch (error) {
       console.error('Google Sign In error:', error);
     } finally {
@@ -109,7 +101,7 @@ export const LoginScreen = () => {
             <GoogleButton
               onPress={handleGoogleSignIn}
               loading={loading}
-              disabled={!request}
+              disabled={loading}
             />
             <View className="mt-8">
               <Text className="text-sm text-slate-600 dark:text-slate-400 text-center">
