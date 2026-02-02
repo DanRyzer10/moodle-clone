@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+
+import {useNavigation} from "@react-navigation/native"
 import {
   View,
   Text,
@@ -9,6 +11,7 @@ import {
   StatusBar,
   Image,
   ActivityIndicator,
+  Button,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,9 +19,14 @@ import * as Google from 'expo-auth-session/providers/google';
 import { GoogleButton } from '../../components/common/google-button';
 import { IMAGE_URL } from '../../core/constants';
 import { AppContext } from '../../core/app-context';
+import { CustomInput } from '../../components/common/input';
+import { save } from '../../core/utils/secure-store';
 
 export const LoginScreen = () => {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [username,setUsername] = useState('');
+  const [password,setPassword] = useState('');
   const authService = AppContext.authService;
 
   const handleGoogleSignIn = async () => {
@@ -32,6 +40,21 @@ export const LoginScreen = () => {
       setLoading(false);
     }
   };
+  const handleLogin= async () => {
+    setLoading(true);
+    try {
+      const response = await authService.handleloginOld(username,password);
+      await save('auth_token',response.token);
+      navigation.navigate('Dashboard' as never);
+      console.log('Login Response:', response);
+
+    }catch (error) {
+      console.error('Login error:', error);
+      
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleForgotPassword = () => {
     console.log('Forgot password');
@@ -97,7 +120,22 @@ export const LoginScreen = () => {
                 </Text>
               </View>
             </View>
+            <CustomInput
+            label='usuario'
+            value={username}
+            onChangeText={setUsername}
+            placeholder='Ingresa tu usuario'
+            icon='person'
 
+            />
+            <CustomInput
+            label='contraseña'
+            value={password}
+            onChangeText={setPassword}
+            placeholder='Ingresa tu contraseña'
+            icon='lock'
+            />
+            <Button onPress={handleLogin} title='login' disabled={loading} />
             <GoogleButton
               onPress={handleGoogleSignIn}
               loading={loading}
