@@ -45,6 +45,12 @@ export const LoginScreen = () => {
     try {
       const response = await authService.handleloginOld(username,password);
       await save('auth_token',response.token);
+      await save('user_data',JSON.stringify({
+        firstname: response.firstname,
+        lastname: response.lastname,
+        email: response.email,
+        picture: response.picture,
+      }));
       navigation.navigate('Dashboard' as never);
       console.log('Login Response:', response);
 
