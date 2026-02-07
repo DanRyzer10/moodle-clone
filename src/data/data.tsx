@@ -1,0 +1,33 @@
+import { Course } from "../core/types";
+
+export const myCourses: Course[] = [{
+    id: 1,
+    shortname: "CS101",
+    fullname: "Introduction to Computer Science",
+    displayname: "Intro to CS",
+    enrolledusercount: 120,
+    idnumber: "CS101-2024",
+    visible: 1,
+    summary: "Learn the basics of computer science.",
+    summaryformat: 1,
+    format: "topics",
+    courseimage: "https://source.unsplash.com/random/400x200?computer",
+    showgrades: true,
+    lang: "en",
+    enablecompletion: true,
+    completionhascriteria: true,
+    completionusertracked: true,
+    category: 1,
+    progress: 45,
+    completed: false,
+    startdate: 1700000000,
+    enddate: 1702592000,
+    marker: 0,
+    lastaccess: 1701000000,
+    isfavourite: true,
+    hidden: false,
+    overviewfiles: [],
+    showactivitydates: true,
+    showcompletionconditions: true,
+    timemodified: 1701500000
+}]
