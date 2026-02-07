@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import {useNavigation} from "@react-navigation/native"
 import {
   View,
   Text,
@@ -21,9 +20,10 @@ import { IMAGE_URL } from '../../core/constants';
 import { AppContext } from '../../core/app-context';
 import { CustomInput } from '../../components/common/input';
 import { save } from '../../core/utils/secure-store';
+import { useAuth } from '../../core/context/auth-context';
 
 export const LoginScreen = () => {
-  const navigation = useNavigation();
+  const { setIsSignedIn } = useAuth();
   const [loading, setLoading] = useState(false);
   const [username,setUsername] = useState('');
   const [password,setPassword] = useState('');
@@ -51,7 +51,7 @@ export const LoginScreen = () => {
         email: response.email,
         picture: response.picture,
       }));
-      navigation.navigate('Dashboard' as never);
+      setIsSignedIn(true);
       console.log('Login Response:', response);
 
     }catch (error) {
