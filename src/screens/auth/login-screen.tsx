@@ -126,7 +126,8 @@ export const LoginScreen = () => {
                 </Text>
               </View>
             </View>
-            <CustomInput
+            <View className='relative my-4'>
+              <CustomInput
             label='usuario'
             value={username}
             onChangeText={setUsername}
@@ -134,14 +135,22 @@ export const LoginScreen = () => {
             icon='person'
 
             />
-            <CustomInput
+            </View>
+            <View className='relative my-4'>
+              <CustomInput
             label='contraseña'
             value={password}
             onChangeText={setPassword}
             placeholder='Ingresa tu contraseña'
             icon='lock'
+            showForgotPassword
+            onForgotPassword={handleForgotPassword}
             />
-            <Button onPress={handleLogin} title='login' disabled={loading} />
+
+            </View>
+            <View className='relative my-2'>
+              <Button onPress={handleLogin} title='login' disabled={loading} />
+            </View>
             <GoogleButton
               onPress={handleGoogleSignIn}
               loading={loading}
