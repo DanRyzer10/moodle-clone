@@ -33,10 +33,6 @@ export interface Course {
 
 
 export interface UserInfo {
-  // email : 'mail@mail.com',
-  //  firstname : 'John',
-  //   lastname : 'Doe',
-  //   picture : 'https://randomuser.me/api/portraits/men/1.jpg'
   email: string;
   firstname: string;
   lastname: string;

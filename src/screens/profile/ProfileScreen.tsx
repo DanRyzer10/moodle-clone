@@ -20,6 +20,7 @@ import { useDarkMode } from '../../hooks/use-dark-mode';
 import { UserProfile } from '../../core/types'; 
 import { MaterialIcons } from '@expo/vector-icons';
 import { AUTH_STORAGE_KEY } from '../../core/constants';
+import { useAuth } from '../../core/context/auth-context';
 
 type TabName = 'Courses' | 'Assignments' | 'Forums' | 'Profile';
 
@@ -29,6 +30,7 @@ export const ProfileScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const {setIsSignedIn} = useAuth()
 
   useEffect(() => {
     loadUserData();
@@ -90,6 +92,7 @@ export const ProfileScreen = () => {
             } catch (error) {
               console.error('Error logging out:', error);
             }
+            setIsSignedIn(false);
           },
         },
       ]
