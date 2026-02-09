@@ -6,10 +6,16 @@ export async function save(key:string,value:string):Promise<void>{
 }
 
 export async function getValueFor(key:string):Promise<string | null>{
-    const result = await SecureStore.getItemAsync(key);
+    let result = await SecureStore.getItemAsync(key);
+    if ( typeof result === 'string' ){
+        result = JSON.parse(result);
+    }
     if ( result){
         return result;
     } else {
         return null;
     }
+}
+export async function deleteValueFor(key:string):Promise<void>{
+    await SecureStore.deleteItemAsync(key);
 }

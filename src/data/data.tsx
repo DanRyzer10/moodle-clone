@@ -30,4 +30,4 @@ export const myCourses: Course[] = [{
     showactivitydates: true,
     showcompletionconditions: true,
     timemodified: 1701500000
-}]
+}];

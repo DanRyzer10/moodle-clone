@@ -1,4 +1,4 @@
-import React from 'react';
+
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -30,6 +30,7 @@ function AppNavigator() {
             ) : (
                 <>
                     <Stack.Screen name="Dashboard" component={DashboardScreen} options={{headerShown: false}} />
+                    <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}} />
                     {/* <Stack.Screen name='Courses' */}
                 </>
             )}

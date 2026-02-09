@@ -7,12 +7,14 @@ import { UserInfo } from '../../core/types';
 interface DashboardHeaderProps {
   user: UserInfo;
   onNotificationPress: () => void;
+  onAvatarPress: () => void;
   hasNotifications?: boolean;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   user,
   onNotificationPress,
+  onAvatarPress,
   hasNotifications = false,
 }) => {
   return (
@@ -21,10 +23,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         {/* User Info */}
         <View className="flex-row items-center gap-3">
           <View className="relative">
-            <Image
-              source={{ uri: user.picture }}
-              className="w-10 h-10 rounded-full ring-2 ring-white dark:ring-gray-700"
-            />
+            <TouchableOpacity onPress={onAvatarPress}>
+              <Image
+                source={{ uri: user.picture }}
+                className="w-10 h-10 rounded-full ring-2 ring-white dark:ring-gray-700"
+              />
+            </TouchableOpacity>
             {user.email && (
               <View className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-background-dark" />
             )}

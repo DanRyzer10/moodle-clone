@@ -1,103 +1,204 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, SafeAreaView, ActivityIndicator, Alert, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StatusBar,
+  Alert,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ProfileHeader } from '../../components/profile/profile-header'; 
+import { SectionTitle } from '../../components/profile/section-title'; 
+import { FormGroup } from '../../components/profile/form-group'; 
+import { FormInput } from '../../components/profile/form-input'; 
+import { SettingItem } from '../../components/profile/setting-item'; 
+import { BottomTabBar } from '../../components/navigation/bottom-tabbar'; 
+import { AuthService } from '../../services/auth/auth.service'; 
+import { save,getValueFor, deleteValueFor } from '../../core/utils/secure-store';
+import { useDarkMode } from '../../hooks/use-dark-mode';
+import { UserProfile } from '../../core/types'; 
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation, CommonActions } from '@react-navigation/native';
-import { useAuth } from '../../core/app-context';
-import { UserService } from '../../services/profile/user.service';
-import { UserProfile } from '../../core/types';
 import { AUTH_STORAGE_KEY } from '../../core/constants';
-import * as SecureStore from 'expo-secure-store';
 
-const userService = new UserService();
+type TabName = 'Courses' | 'Assignments' | 'Forums' | 'Profile';
 
 export const ProfileScreen = () => {
-  const navigation = useNavigation();
-  const { user, setUser } = useAuth(); 
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabName>('Profile');
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   useEffect(() => {
-    const loadProfile = async () => {
-      if (!user?.token) return;
-      try {
-        const data = await userService.getUserInfo(user.token);
-        setProfile(data);
-      } catch (error) {
-        console.error('Error al cargar perfil:', error);
-        Alert.alert("Error", "No se pudo obtener la información del servidor");
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProfile();
+    loadUserData();
   }, []);
 
-  const handleLogout = async () => {
+  const loadUserData = async () => {
     try {
-      if (Platform.OS === 'web') {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-      } else {
-        await SecureStore.deleteItemAsync(AUTH_STORAGE_KEY);
+      const userData: any = await getValueFor(AUTH_STORAGE_KEY);
+      console.log('Loaded user data:', userData.email);
+      if (userData) {
+        const userProfile: UserProfile = {
+          name: userData.firstname,
+          email: userData.email,
+          picture: userData.picture,
+          id: userData.id
+        };
+        setUser(userProfile);
+        setName(`${userData.firstname} ${userData.lastname}`);
+        setEmail(userData.email);
       }
-
-      setUser(null);
-
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Login' }], 
-        })
-      );
-    } catch (e) {
-      Alert.alert("Error", "No se pudo cerrar la sesión");
+    } catch (error) {
+      console.error('Error loading user data:', error);
     }
   };
 
-  if (loading) return (
-    <View className="flex-1 justify-center items-center bg-white dark:bg-background-dark">
-      <ActivityIndicator size="large" color="#135bec" />
-    </View>
-  );
+  const handleSave = async () => {
+    try {
+      console.log('Saving profile with name:', name, 'and email:', email);
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      Alert.alert('Error', 'Failed to update profile');
+    }
+  };
+
+  const handleEditPhoto = () => {
+    Alert.alert('Edit Photo', 'Photo picker feature coming soon');
+  };
+
+  const handleNotifications = () => {
+    console.log('Navigate to Notifications');
+  };
+
+  const handleSecurity = () => {
+    console.log('Navigate to Security');
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteValueFor(AUTH_STORAGE_KEY);
+            } catch (error) {
+              console.error('Error logging out:', error);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleTabPress = (tab: TabName) => {
+    setActiveTab(tab);
+    console.log('Tab pressed:', tab);
+  };
+
+  if (!user) {
+    return (
+      <SafeAreaView className="flex-1 bg-background-light dark:bg-background-dark items-center justify-center">
+        <Text className="text-slate-500">Loading...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-background-dark">
-      <View className="px-6 py-4 flex-row items-center border-b border-slate-100 dark:border-slate-800">
-        <TouchableOpacity onPress={() => navigation.goBack()} className="p-2">
-          <MaterialIcons name="arrow-back-ios" size={20} color="#135bec" />
-        </TouchableOpacity>
-        <Text className="flex-1 text-center text-lg font-bold dark:text-white">Mi Perfil</Text>
-        <View className="w-10" />
-      </View>
+    <SafeAreaView className="flex-1 bg-background-light dark:bg-background-dark">
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
-      <View className="items-center pt-10 px-6">
-        <Image 
-          source={{ uri: `https://ui-avatars.com/api/?name=${profile?.name || 'User'}&background=135bec&color=fff` }} 
-          className="size-32 rounded-full border-4 border-primary/10"
-        />
-
-        <Text className="mt-6 text-2xl font-black text-slate-900 dark:text-white">
-          {profile?.name}
-        </Text>
-        <Text className="text-slate-500 font-medium italic">ID: {profile?.id}</Text>
-
-        <View className="w-full mt-10 space-y-4">
-          <View className="bg-slate-50 dark:bg-slate-800 p-5 rounded-3xl flex-row items-center border border-slate-100 dark:border-slate-700">
-            <MaterialIcons name="email" size={24} color="#135bec" />
-            <View className="ml-4">
-              <Text className="text-slate-400 text-[10px] font-bold uppercase">Correo Electrónico</Text>
-              <Text className="text-slate-900 dark:text-white font-bold">{profile?.email}</Text>
-            </View>
-          </View>
-
-          <TouchableOpacity 
-            onPress={handleLogout}
-            className="bg-red-50 dark:bg-red-900/20 p-5 rounded-3xl flex-row items-center mt-6 border border-red-100 dark:border-red-900/30"
-          >
-            <MaterialIcons name="logout" size={24} color="#ef4444" />
-            <Text className="ml-4 text-red-500 font-bold text-lg">Cerrar Sesión</Text>
+      {/* Top App Bar */}
+      <View className="bg-background-light/80 dark:bg-background-dark/80 border-b border-slate-200 dark:border-slate-800">
+        <View className="flex-row items-center justify-between px-4 py-3">
+          <View className="w-16" />
+          <Text className="text-lg font-bold text-slate-900 dark:text-white flex-1 text-center">
+            Profile
+          </Text>
+          <TouchableOpacity onPress={handleSave} className="w-16 items-end">
+            <Text className="text-primary text-base font-bold">Save</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <View className="flex-col gap-6 p-4 max-w-lg mx-auto w-full pb-24">
+
+          <ProfileHeader user={user} onEditPhoto={handleEditPhoto} />
+
+          <View className="flex-col gap-2">
+            <SectionTitle title="Personal Information" />
+            <FormGroup>
+              <FormInput
+                label="Name"
+                value={name}
+                onChangeText={setName}
+              />
+              <FormInput
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+              />
+            </FormGroup>
+            <Text className="ml-1 text-xs text-slate-400 dark:text-slate-500">
+              Your email is visible to your instructors and classmates.
+            </Text>
+          </View>
+          <View className="flex-col gap-2">
+            <SectionTitle title="Preferences" />
+            <FormGroup>
+              <SettingItem
+                icon="dark-mode"
+                iconBgColor="bg-indigo-50 dark:bg-slate-700"
+                iconColor="#6366f1"
+                title="Dark Mode"
+                hasToggle
+                toggleValue={isDarkMode}
+                onToggle={toggleDarkMode}
+              />
+              <SettingItem
+                icon="notifications"
+                iconBgColor="bg-orange-50 dark:bg-slate-700"
+                iconColor="#f97316"
+                title="Notifications"
+                hasArrow
+                onPress={handleNotifications}
+              />
+              <SettingItem
+                icon="lock"
+                iconBgColor="bg-green-50 dark:bg-slate-700"
+                iconColor="#16a34a"
+                title="Password & Security"
+                hasArrow
+                onPress={handleSecurity}
+              />
+            </FormGroup>
+          </View>
+
+
+          <View className="pt-4">
+            <TouchableOpacity
+              onPress={handleLogout}
+              activeOpacity={0.8}
+              className="flex-row w-full items-center justify-center gap-2 rounded-xl border border-red-100 dark:border-red-900/30 bg-white dark:bg-[#1e293b] px-4 py-3.5 shadow-sm active:bg-red-50 dark:active:bg-red-900/20"
+            >
+              <MaterialIcons name="logout" size={20} color="#dc2626" />
+              <Text className="text-base font-bold text-red-600">Log Out</Text>
+            </TouchableOpacity>
+            <Text className="mt-4 text-center text-xs text-slate-400">
+              Version 2.4.0 (Build 302)
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+
+      <BottomTabBar activeTab={activeTab} onTabPress={handleTabPress} />
     </SafeAreaView>
   );
 };

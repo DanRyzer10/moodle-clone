@@ -14,10 +14,12 @@ import { SectionHeader } from '../../components/dashboard/section-header';
 import { BottomTabBar } from '../../components/navigation/bottom-tabbar';
 import { myCourses } from '../../data/data';
 import { SearchBar } from '../../components/common/search-bar';
+import { useNavigation } from '@react-navigation/native';
 
 type TabName = 'Courses' | 'Assignments' | 'Forums' | 'Profile';
 
 export const DashboardScreen = () => {
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<TabName>('Courses');
 
@@ -48,6 +50,9 @@ export const DashboardScreen = () => {
     setActiveTab(tab);
     console.log('Tab pressed:', tab);
   };
+  const onAvatarPress = () => {
+    navigation.navigate('Profile' as never);
+  }
 
 //   const renderContinueLearningItem = ({ item }: { item: Course }) => (
 //     <ContinueLearningCard
@@ -70,6 +75,7 @@ export const DashboardScreen = () => {
 
       {/* Header */}
       <DashboardHeader
+      onAvatarPress={onAvatarPress}
         user={user}
         onNotificationPress={handleNotificationPress}
         hasNotifications={true}

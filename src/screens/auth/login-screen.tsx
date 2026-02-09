@@ -11,6 +11,7 @@ import {
   Image,
   ActivityIndicator,
   Alert,
+  Button,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,8 +21,10 @@ import { AppContext } from '../../core/app-context';
 import { CustomInput } from '../../components/common/input';
 import { save } from '../../core/utils/secure-store';
 import { useAuth } from '../../core/context/auth-context';
+import { useNavigation } from '@react-navigation/native';
 
 export const LoginScreen = () => {
+  const navigation = useNavigation();
   const { setIsSignedIn } = useAuth();
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
@@ -39,6 +42,9 @@ export const LoginScreen = () => {
       setLoading(false);
     }
   };
+  const handleForgotPassword = () => {
+    Alert.alert("Recuperar Contraseña", "Funcionalidad de recuperación de contraseña no implementada.");
+  }
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -56,8 +62,10 @@ export const LoginScreen = () => {
         lastname: response.lastname,
         email: response.email,
         picture: response.picture,
-      }));
+      });
       setIsSignedIn(true);
+      save(AUTH_STORAGE_KEY, sessionData);
+      navigation.navigate('Dashboard' as never);
       console.log('Login Response:', response);
 
     }catch (error) {
@@ -111,47 +119,6 @@ export const LoginScreen = () => {
               <Text className="text-slate-500 dark:text-slate-400 text-base text-center">
                 Inicia sesión para continuar
               </Text>
-            </View>
-
-            <View className="space-y-4">
-              <CustomInput
-                label='Usuario'
-                value={username}
-                onChangeText={setUsername}
-                placeholder='Ingresa tu usuario'
-                icon='person'
-              />
-              <CustomInput
-                label='Contraseña'
-                value={password}
-                onChangeText={setPassword}
-                placeholder='Ingresa tu contraseña'
-                icon='lock'
-                secureTextEntry
-              />
-            </View>
-
-            <TouchableOpacity 
-              onPress={handleLogin}
-              disabled={loading}
-              className={`mt-6 h-14 rounded-2xl flex-row items-center justify-center ${loading ? 'bg-slate-300' : 'bg-primary'}`}
-            >
-              {loading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text className="text-white text-lg font-bold">Entrar</Text>
-              )}
-            </TouchableOpacity>
-
-            <View className="relative my-8">
-              <View className="absolute inset-0 flex items-center">
-                <View className="w-full border-t border-slate-200 dark:border-slate-700" />
-              </View>
-              <View className="relative flex justify-center">
-                <Text className="px-4 bg-white dark:bg-background-dark text-slate-500 dark:text-slate-400 text-sm">
-                  O continúa con
-                </Text>
-              </View>
             </View>
             <View className='relative my-4'>
               <CustomInput
