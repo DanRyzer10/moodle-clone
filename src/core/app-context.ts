@@ -1,10 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AuthService, AuthResponse } from '../services/auth/auth.service';
+import { CourseService } from '../services/courses/course.service';
 
-// --- TU CLASE ORIGINAL (SINGLETON) ---
 export class AppContext {
     private static instance: AppContext;
     private static _authService: AuthService = new AuthService();
+    private static _courseService = new CourseService();
+
+    public static get courseService(): CourseService {
+        return AppContext._courseService;
+    }
 
     public static get authService(): AuthService {
         return AppContext._authService;

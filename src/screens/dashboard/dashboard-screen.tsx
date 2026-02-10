@@ -15,6 +15,8 @@ import { BottomTabBar } from '../../components/navigation/bottom-tabbar';
 import { myCourses } from '../../data/data';
 import { SearchBar } from '../../components/common/search-bar';
 import { useNavigation } from '@react-navigation/native';
+import { AppContext } from '../../core/app-context';
+import { useAuth } from '../../core/context/auth-context';
 
 type TabName = 'Courses' | 'Assignments' | 'Forums' | 'Profile';
 
@@ -22,6 +24,7 @@ export const DashboardScreen = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<TabName>('Courses');
+  const courseService = AppContext.courseService;
 
   const user: UserInfo = {
    email : 'mail@mail.com',

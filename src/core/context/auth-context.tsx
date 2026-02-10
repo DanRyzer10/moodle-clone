@@ -4,12 +4,14 @@ import { getValueFor } from '../utils/secure-store';
 interface AuthContextType {
   isSignedIn: boolean;
   setIsSignedIn: (value: boolean) => void;
+  setIsLoading: (value: boolean) => void;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isSignedIn: false,
   setIsSignedIn: () => {},
+  setIsLoading: () => {},
   isLoading: true,
 });
 
@@ -30,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isSignedIn, setIsSignedIn, isLoading }}>
+    <AuthContext.Provider value={{ isSignedIn, setIsSignedIn, isLoading, setIsLoading }}>
       {children}
     </AuthContext.Provider>
   );
