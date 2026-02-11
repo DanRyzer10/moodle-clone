@@ -30,7 +30,6 @@ export const CourseScreen = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      // Pequeño delay opcional para que la animación se aprecie si el internet es muy rápido
       setTimeout(() => setLoading(false), 500); 
     }
   };
@@ -39,7 +38,10 @@ export const CourseScreen = () => {
     loadData();
   }, [courseId]);
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | number) => {
+    if (typeof dateString === 'number') {
+      dateString = new Date(dateString * 1000).toISOString();
+    }
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
   };
@@ -76,11 +78,11 @@ export const CourseScreen = () => {
                 <MaterialIcons name="assignment" size={24} color="#135bec" />
               </div>
               <View className="flex-1">
-                <Text className="text-slate-900 dark:text-white font-bold text-base">{item.title}</Text>
+                <Text className="text-slate-900 dark:text-white font-bold text-base">{item.activity}</Text>
                 <View className="flex-row items-center mt-1">
                   <MaterialIcons name="access-time" size={14} color="#94a3b8" />
                   <Text className="text-slate-400 text-xs ml-1">
-                    Límite: {formatDate(item.dueDate)}
+                    Límite: {formatDate(item.duedate)}
                   </Text>
                 </View>
               </View>

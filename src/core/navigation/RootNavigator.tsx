@@ -8,6 +8,8 @@ import { DashboardScreen } from '../../screens/dashboard/dashboard-screen';
 import { ProfileScreen } from '../../screens/profile/ProfileScreen'; 
 import SplashScreen from '../../screens/shared/splash-screen';
 import { AuthProvider, useAuth } from '../context/auth-context';
+import { CourseDetailScreen } from '../../screens/courseContent/course-detail';
+import { CourseScreen } from '../../screens/courseContent/course';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +33,7 @@ function AppNavigator() {
                 <>
                     <Stack.Screen name="Dashboard" component={DashboardScreen} options={{headerShown: false}} />
                     <Stack.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}} />
+                    <Stack.Screen name='CourseDetail' component={CourseScreen} options={{headerShown: false}} />
                     {/* <Stack.Screen name='Courses' */}
                 </>
             )}

@@ -38,7 +38,8 @@ export const DashboardScreen = () => {
   };
 
   const handleCoursePress = (course: Course) => {
-    console.log('Course pressed:', course.summary);
+    //@ts-ignore
+    navigation.navigate('CourseDetail' as never,{ course } as never);
   };
 
   const handleSeeAll = () => {
@@ -46,7 +47,7 @@ export const DashboardScreen = () => {
   };
 
   const handleCourseMenu = (course: Course) => {
-    console.log('Course menu:', course.summary);
+    console.log('Course menu:', course.id);
   };
 
   const handleTabPress = (tab: TabName) => {
