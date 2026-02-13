@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -12,26 +12,47 @@ import { CourseCard } from '../../components/courses/course-card';
 import { DashboardHeader } from '../../components/dashboard/dashboard-header';
 import { SectionHeader } from '../../components/dashboard/section-header';
 import { BottomTabBar } from '../../components/navigation/bottom-tabbar';
-import { myCourses } from '../../data/data';
 import { SearchBar } from '../../components/common/search-bar';
 import { useNavigation } from '@react-navigation/native';
-import { AppContext } from '../../core/app-context';
-import { useAuth } from '../../core/context/auth-context';
+import { AppContext, useAuth } from '../../core/app-context';
+import SplashScreen from '../shared/splash-screen';
 
 type TabName = 'Courses' | 'Assignments' | 'Forums' | 'Profile';
 
 export const DashboardScreen = () => {
   const navigation = useNavigation();
+  const { user: authUser } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<TabName>('Courses');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const courseService = AppContext.courseService;
 
   const user: UserInfo = {
-   email : 'mail@mail.com',
-   firstname : 'John',
-    lastname : 'Doe',
-    picture : 'https://randomuser.me/api/portraits/men/1.jpg'
+   email : authUser?.email ?? '',
+   firstname : authUser?.firstname ?? '',
+    lastname : authUser?.lastname ?? '',
+    picture : authUser?.picture ?? ''
   };
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        if (!authUser?.token) return;
+        const data = await courseService.getAllCourses(authUser.token);
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCourses();
+  }, [authUser?.token]);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   const handleNotificationPress = () => {
     console.log('Notifications pressed');
@@ -117,7 +138,7 @@ export const DashboardScreen = () => {
         <View className="flex-col pt-6 px-4 pb-24">
           <SectionHeader title="My Courses" />
           <View className="flex-col gap-4">
-            {myCourses.map((course) => (
+            {courses.map((course) => (
               <CourseCard
                 key={course.id}
                 course={course}
